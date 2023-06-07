@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/MyListView.qml</file>
+        <file>res/description.svg</file>
+        <file>res/home.svg</file>
+        <file>res/backpack.svg</file>
+        <file>res/bolt.svg</file>
+        <file>res/casino.svg</file>
+        <file>res/class.svg</file>
+        <file>res/face.svg</file>
+        <file>res/moving.svg</file>
+        <file>res/add.svg</file>
+        <file>res/clear.svg</file>
+        <file>res/create.svg</file>
+        <file>res/delete.svg</file>
+        <file>res/upload.svg</file>
+        <file>res/done.svg</file>
+        <file>res/file_copy.svg</file>
+        <file>res/lock.svg</file>
+        <file>res/lock_open.svg</file>
+        <file>ts/main.qm</file>
+    </qresource>
+</RCC>
