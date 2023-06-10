@@ -16,6 +16,7 @@ public:
 
     Q_INVOKABLE virtual bool readFile();
     Q_INVOKABLE virtual bool saveFile();
+    Q_INVOKABLE bool exportFile(QString dest);
 
     //Q_INVOKABLE DndCharlistData* generateCharlist(QObject *parent = nullptr);
     bool populateCharlist(DndCharlistData *charlist);

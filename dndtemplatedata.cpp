@@ -6,6 +6,11 @@ DndTemplateData::DndTemplateData(QObject *parent)
     : AbstractDndCharacter{parent}
 {}
 
+bool DndTemplateData::exportFile(QString dest)
+{
+    return AbstractFileData::exportFile(dest);
+}
+
 bool DndTemplateData::populateCharlist(DndCharlistData *charlist)
 {
     if (!m_race || !m_cls || !m_setting || !m_settingModel)

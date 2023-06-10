@@ -34,6 +34,7 @@ public:
     void setMoney(int money);
     virtual bool removeFile();
     virtual void setFilePath(QString filePath);
+    Q_INVOKABLE bool exportFile(QString dest);
 
     Q_INVOKABLE int testChar(QString charId, DndSkill* skill = nullptr);
     Q_INVOKABLE int useItem(DndItem* item);

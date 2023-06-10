@@ -52,6 +52,7 @@ public:
     virtual bool readFile();
     Q_INVOKABLE virtual bool saveFile();
     Q_INVOKABLE virtual bool removeFile();
+    Q_INVOKABLE bool exportFile(QString dest);
 
     Q_INVOKABLE DndSettingData* createCopy();
 

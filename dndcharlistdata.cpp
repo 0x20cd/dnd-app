@@ -12,6 +12,11 @@ DndCharlistData::DndCharlistData(QObject *parent)
     , m_lockedFiles(nullptr)
 {}
 
+bool DndCharlistData::exportFile(QString dest)
+{
+    return AbstractFileData::exportFile(dest);
+}
+
 void DndCharlistData::setLockedFilesSet(LockedFilesSet *lockedFiles)
 {
     m_lockedFiles = lockedFiles;

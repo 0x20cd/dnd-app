@@ -20,5 +20,6 @@
         <file>res/lock.svg</file>
         <file>res/lock_open.svg</file>
         <file>ts/main.qm</file>
+        <file>res/ios_share.svg</file>
     </qresource>
 </RCC>

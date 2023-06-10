@@ -2,6 +2,7 @@
 #define ABSTRACTFILEDATA_H
 
 #include <QFile>
+#include <QDir>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -13,6 +14,7 @@ public:
     explicit AbstractFileData(QString filePath = QString());
     virtual bool readFile() = 0;
     virtual bool saveFile() = 0;
+    virtual bool exportFile(QString dest);
     virtual bool removeFile();
     QString filePath();
     virtual void setFilePath(QString filePath);

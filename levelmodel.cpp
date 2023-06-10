@@ -63,7 +63,6 @@ bool LevelModel::setData(const QModelIndex &index, const QVariant &value, int ro
     }
 
     updateData();
-    emit dataChanged(index, this->index(this->rowCount() - 1));
     return true;
 }
 
@@ -119,11 +118,16 @@ void LevelModel::clear()
 
 void LevelModel::updateData()
 {
+    if (this->rowCount() == 0)
+        return;
+
     int xp = 0, pb = 0;
     for (Lvl &ref : m_data) {
         ref.xp = (xp += ref.xpDiff);
         ref.pb = (pb += ref.pbDiff);
     }
+
+    emit dataChanged(this->index(0), this->index(this->rowCount() - 1));
 }
 
 QJsonObject LevelModel::getLvlByXp(int xp)

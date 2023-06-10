@@ -9,6 +9,11 @@ DndSettingData::DndSettingData(QObject *parent)
     , m_genRand(nullptr)
 {}
 
+bool DndSettingData::exportFile(QString dest)
+{
+    return AbstractFileData::exportFile(dest);
+}
+
 DndSettingData* DndSettingData::createCopy()
 {
     //qDebug() << "P?" << this << this->parent();

@@ -40,13 +40,17 @@ ApplicationWindow {
             }
 
             ToolButton {
-                visible: AppEngine.isSignedIn
+                //visible: AppEngine.isSignedIn
                 text: qsTr("Exit") /*(AppEngine.isMaster ? qsTr("Master") : qsTr("Player")) + " | " + qsTr("Exit")*/
                 implicitWidth: 100
                 onClicked: {
-                    AppEngine.signOut();
-                    stack.clear(StackView.ReplaceTransition)
-                    stack.push(signInScreen)
+                    if (AppEngine.isSignedIn) {
+                        AppEngine.signOut();
+                        stack.clear(StackView.ReplaceTransition)
+                        stack.push(signInScreen)
+                    } else {
+                        Qt.quit()
+                    }
                 }
             }
         }
@@ -58,7 +62,17 @@ ApplicationWindow {
         focus: true
         onFocusChanged: { focus = true; }
 
-        Keys.onBackPressed: stack.pop()
+        Keys.onBackPressed: {
+            if (stack.depth > 1)
+                stack.pop()
+            else if (AppEngine.isSignedIn) {
+                AppEngine.signOut()
+                stack.clear(StackView.ReplaceTransition)
+                stack.push(signInScreen)
+            } else {
+                Qt.quit()
+            }
+        }
 
         initialItem: AppEngine.isPasswordSet ? signInScreen : setPasswordScreen
     }
@@ -274,12 +288,21 @@ ApplicationWindow {
                                 anchors.verticalCenter: parent.verticalCenter
 
                                 RoundButton {
+                                    icon.source: "qrc:/res/ios_share.svg"
+                                    onClicked: {
+                                        exportFileDialog.ptr = model.ptr
+                                        exportFileDialog.open()
+                                    }
+                                }
+
+                                RoundButton {
                                     icon.source: "qrc:/res/file_copy.svg"
                                     enabled: AppEngine.isMaster
                                     onClicked: {
                                         stack.push(templateScreen, {"template" : AppEngine.createTemplate(model.ptr)});
                                     }
                                 }
+
                                 RoundButton {
                                     icon.source: "qrc:/res/delete.svg"
                                     enabled: AppEngine.isMaster
@@ -298,7 +321,7 @@ ApplicationWindow {
                             text: "%1 | %2".arg(model.ptr.name)
                                            .arg(model.ptr.isValid
                                                 ? "\"%1\"".arg(model.ptr.setting.display)
-                                                : "[%1]".arg(model.ptr.settingHash))
+                                                : "[%1]".arg(model.ptr.settingHash.slice(0,16)))
                             width: parent.width
                             onClicked: {
                                 if (model.ptr.isValid)
@@ -311,6 +334,14 @@ ApplicationWindow {
                                 z: 1
                                 anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
+
+                                RoundButton {
+                                    icon.source: "qrc:/res/ios_share.svg"
+                                    onClicked: {
+                                        exportFileDialog.ptr = model.ptr
+                                        exportFileDialog.open()
+                                    }
+                                }
 
                                 RoundButton {
                                     icon.source: "qrc:/res/file_copy.svg"
@@ -340,7 +371,7 @@ ApplicationWindow {
                             text: "%1 | %2".arg(model.ptr.name)
                                            .arg(model.ptr.isValid
                                                 ? "\"%1\"".arg(model.ptr.setting.display)
-                                                : "[%1]".arg(model.ptr.settingHash))
+                                                : "[%1]".arg(model.ptr.settingHash.slice(0,16)))
 
                             onClicked: {
                                 if (model.ptr.isValid)
@@ -353,6 +384,14 @@ ApplicationWindow {
                                 z: 1
                                 anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
+
+                                RoundButton {
+                                    icon.source: "qrc:/res/ios_share.svg"
+                                    onClicked: {
+                                        exportFileDialog.ptr = model.ptr
+                                        exportFileDialog.open()
+                                    }
+                                }
 
                                 RoundButton {
                                     enabled: AppEngine.isMaster
@@ -383,6 +422,17 @@ ApplicationWindow {
                     TabButton { text: qsTr("Settings") }
                     TabButton { text: qsTr("Templates") }
                     TabButton { text: qsTr("Charlists") }
+                }
+            }
+
+            FileDialog {
+                property var ptr: undefined
+                id: exportFileDialog
+                fileMode: FileDialog.SaveFile
+                onAccepted: {
+                    if (!ptr.exportFile(currentFile)) {
+                        failedExportMsg.open()
+                    }
                 }
             }
 
@@ -496,6 +546,7 @@ ApplicationWindow {
                             Layout.fillWidth: true
                             implicitHeight: 200
                             text: setting.about
+                            wrapMode: TextEdit.Wrap
 
                             Binding {
                                 target: setting
@@ -628,6 +679,7 @@ ApplicationWindow {
                             implicitHeight: 100
                             text: charComboBox.currentValue ? charComboBox.currentValue.about : ""
                             enabled: AppEngine.isMaster && charComboBox.currentValue !== undefined
+                            wrapMode: TextEdit.Wrap
                             onTextChanged: {
                                 if (charComboBox.currentValue !== undefined) {
                                     charComboBox.currentValue.about = text
@@ -703,6 +755,7 @@ ApplicationWindow {
                             implicitHeight: 100
                             text: randomComboBox.currentValue ? randomComboBox.currentValue.about : ""
                             enabled: AppEngine.isMaster && randomComboBox.currentValue !== undefined
+                            wrapMode: TextEdit.Wrap
                             onTextChanged: {
                                 if (randomComboBox.currentValue !== undefined) {
                                     randomComboBox.currentValue.about = text
@@ -851,6 +904,7 @@ ApplicationWindow {
                             implicitHeight: 100
                             text: itemComboBox.currentValue ? itemComboBox.currentValue.about : ""
                             enabled: AppEngine.isMaster && itemComboBox.currentValue !== undefined
+                            wrapMode: TextEdit.Wrap
                             onTextChanged: {
                                 if (itemComboBox.currentValue !== undefined) {
                                     itemComboBox.currentValue.about = text
@@ -1020,6 +1074,7 @@ ApplicationWindow {
                             implicitHeight: 100
                             text: skillComboBox.currentValue ? skillComboBox.currentValue.about : ""
                             enabled: AppEngine.isMaster && skillComboBox.currentValue !== undefined
+                            wrapMode: TextEdit.Wrap
                             onTextChanged: {
                                 if (skillComboBox.currentValue !== undefined) {
                                     skillComboBox.currentValue.about = text
@@ -1143,6 +1198,7 @@ ApplicationWindow {
                             implicitHeight: 100
                             text: raceComboBox.currentValue ? raceComboBox.currentValue.about : ""
                             enabled: AppEngine.isMaster && raceComboBox.currentValue !== undefined
+                            wrapMode: TextEdit.Wrap
                             onTextChanged: {
                                 if (raceComboBox.currentValue !== undefined) {
                                     raceComboBox.currentValue.about = text
@@ -1262,6 +1318,7 @@ ApplicationWindow {
                                 implicitHeight: 100
                                 text: classComboBox.currentValue ? classComboBox.currentValue.about : ""
                                 enabled: AppEngine.isMaster && classComboBox.currentValue !== undefined
+                                wrapMode: TextEdit.Wrap
                                 onTextChanged: {
                                     if (classComboBox.currentValue !== undefined) {
                                         classComboBox.currentValue.about = text
@@ -1423,7 +1480,7 @@ ApplicationWindow {
                         Layout.preferredHeight: 40
                         Label {
                             Layout.fillWidth: true
-                            Layout.preferredWidth: 100
+                            Layout.preferredWidth: 80
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                             text: "Lvl"
@@ -1437,7 +1494,7 @@ ApplicationWindow {
                         }
                         Label {
                             Layout.fillWidth: true
-                            Layout.preferredWidth: 100
+                            Layout.preferredWidth: 80
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                             text: "d(PB)"
@@ -1451,10 +1508,14 @@ ApplicationWindow {
                         }
                         Label {
                             Layout.fillWidth: true
-                            Layout.preferredWidth: 100
+                            Layout.preferredWidth: 80
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                             text: "PB"
+                        }
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: 80
                         }
                     }
 
@@ -1468,7 +1529,7 @@ ApplicationWindow {
                             width: parent.width
                             Label {
                                 Layout.fillWidth: true
-                                Layout.preferredWidth: 100
+                                Layout.preferredWidth: 80
                                 text: index + 2
                                 horizontalAlignment: Text.AlignHCenter
                             }
@@ -1486,7 +1547,7 @@ ApplicationWindow {
                             }
                             TextField {
                                 Layout.fillWidth: true
-                                Layout.preferredWidth: 100
+                                Layout.preferredWidth: 80
                                 text: model.pbDiff
                                 validator: IntValidator { bottom: 0 }
                                 enabled: AppEngine.isMaster
@@ -1503,9 +1564,20 @@ ApplicationWindow {
                             }
                             Label {
                                 Layout.fillWidth: true
-                                Layout.preferredWidth: 100
+                                Layout.preferredWidth: 80
                                 text: model.pb
                                 horizontalAlignment: Text.AlignHCenter
+                            }
+                            Row {
+                                Layout.fillWidth: true
+                                Layout.preferredWidth: 80
+                                RoundButton {
+                                    icon.source: "qrc:/res/delete.svg"
+                                    enabled: AppEngine.isMaster
+                                    onClicked: {
+                                        setting.levels.remove(index)
+                                    }
+                                }
                             }
                         }
                     }
@@ -1625,6 +1697,7 @@ ApplicationWindow {
                         implicitHeight: 200
                         text: template.desc
                         enabled: AppEngine.isMaster
+                        wrapMode: TextEdit.Wrap
 
                         Binding {
                             target: template
@@ -1807,6 +1880,7 @@ ApplicationWindow {
                             implicitHeight: 200
                             text: charlist.desc
                             enabled: AppEngine.isMaster || !charlist.isLocked
+                            wrapMode: TextEdit.Wrap
 
                             Binding {
                                 target: charlist
@@ -2025,9 +2099,9 @@ ApplicationWindow {
                             ComboBox {
                                 id: itemPickComboBox
                                 Layout.fillWidth: true
-                                model: charlist.setting.items //template.setting.races
+                                model: charlist.setting.items
                                 valueRole: "ptr"
-                                displayText: currentValue.display
+                                displayText: currentValue !== undefined ? currentValue.display : "-"
                                 enabled: AppEngine.isMaster || !charlist.isLocked
 
                                 delegate: ItemDelegate {
@@ -2052,7 +2126,7 @@ ApplicationWindow {
 
                             RoundButton {
                                 icon.source: "qrc:/res/add.svg"
-                                enabled: AppEngine.isMaster || !charlist.isLocked
+                                enabled: itemPickComboBox.currentValue !== undefined && (AppEngine.isMaster || !charlist.isLocked)
                                 onClicked: {
                                     charlist.items.append(itemPickComboBox.currentValue, qualityTextField.text)
                                 }
@@ -2060,7 +2134,7 @@ ApplicationWindow {
 
                             RoundButton {
                                 icon.source: "qrc:/res/casino.svg"
-                                enabled: AppEngine.isMaster || !charlist.isLocked
+                                enabled: itemPickComboBox.currentValue !== undefined && (AppEngine.isMaster || !charlist.isLocked)
 
                                 onClicked: {
                                     charlist.items.append(itemPickComboBox.currentValue)
@@ -2224,6 +2298,13 @@ ApplicationWindow {
         id: failedImportMsg
         title: qsTr("Error")
         text: qsTr("Failed to import this file!")
+        buttons: MessageDialog.Ok
+    }
+
+    MessageDialog {
+        id: failedExportMsg
+        title: qsTr("Error")
+        text: qsTr("Failed to export this file!")
         buttons: MessageDialog.Ok
     }
 
