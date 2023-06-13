@@ -130,9 +130,11 @@ int DndCharlistData::testChar(QString charId, DndSkill* skill)
     return res;
 }
 
-int DndCharlistData::useItem(DndItem* item)
+int DndCharlistData::useItem(int i)
 {
-    return (m_chars[item->chr()->id()].toInt() + item->itemRand()->rand() + m_pb) * m_items.getQuality(item) / 100;
+    DndItem *item = m_items.data(m_items.index(i), ItemsModel::ItemRole).value<DndItem*>();
+    int quality = m_items.data(m_items.index(i), ItemsModel::QualityRole).value<int>();
+    return (m_chars[item->chr()->id()].toInt() + item->itemRand()->rand() + m_pb) * quality / 100;
 }
 
 QJsonObject* DndCharlistData::chars()

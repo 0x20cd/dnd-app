@@ -2074,7 +2074,7 @@ ApplicationWindow {
                             RoundButton {
                                 icon.source: "qrc:/res/casino.svg"
                                 onClicked: {
-                                    thrownValueBox.text = charlist.useItem(model.item)
+                                    thrownValueBox.text = charlist.useItem(index)
                                     thrownValueBox.visible = true
                                 }
                             }

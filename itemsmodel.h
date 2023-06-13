@@ -28,7 +28,7 @@ public:
     Q_INVOKABLE void append(DndItem* item);
     Q_INVOKABLE void append(DndItem* item, int quality);
     Q_INVOKABLE void remove(int row);
-    Q_INVOKABLE int getQuality(DndItem* item);
+    //Q_INVOKABLE int getQuality(DndItem* item);
 
 private:
     QList<std::pair<DndItem*, int>> m_data;

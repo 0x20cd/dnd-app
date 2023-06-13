@@ -83,10 +83,13 @@ void ItemsModel::remove(int row)
     removeRows(row, 1);
 }
 
-int ItemsModel::getQuality(DndItem* item)
+/*int ItemsModel::getQuality(DndItem* item)
 {
+    qDebug() << item->id();
     auto it = std::find_if(m_data.begin(), m_data.end(), [item](const std::pair<DndItem*,int> &r){
         return r.first == item;
     });
+    qDebug() << it->first->id();
+    qDebug() << it->second;
     return it->second;
-}
+}*/

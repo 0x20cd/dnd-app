@@ -37,7 +37,7 @@ public:
     Q_INVOKABLE bool exportFile(QString dest);
 
     Q_INVOKABLE int testChar(QString charId, DndSkill* skill = nullptr);
-    Q_INVOKABLE int useItem(DndItem* item);
+    Q_INVOKABLE int useItem(int i);
 
     virtual bool readFile();
     Q_INVOKABLE virtual bool saveFile();
